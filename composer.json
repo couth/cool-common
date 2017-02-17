@@ -1,0 +1,20 @@
+{
+    "name": "cool/common",
+    "description": "Common Library for Cool projects",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Carl Liu",
+            "email": "coolboy@outlook.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Cool\\Common\\": "src"
+        }
+    }
+}
