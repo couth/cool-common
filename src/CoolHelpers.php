@@ -53,7 +53,7 @@ class CoolHelpers
         $retries = 0;
         do {
             if ($retries > 0) {
-                usleep(rand($minUsleep, $maxUsleep));
+                usleep(mt_rand($minUsleep, $maxUsleep));
             }
             $retries += 1;
         } while (!flock($fp, LOCK_EX) and $retries <= $maxRetries);
