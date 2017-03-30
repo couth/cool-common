@@ -88,4 +88,26 @@ class CoolHelpers
 
         return sprintf('%04x%04x%04x%04x%04x%04x%04x%04x', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
+
+    /**
+     * convert string to camel case
+     *
+     * @param $str
+     * @return mixed
+     */
+    public static function camelize($str)
+    {
+        return str_replace(' ', '', lcfirst(ucwords(str_replace('_', ' ', $str))));
+    }
+
+    /**
+     * convert string to underscore case
+     *
+     * @param $str
+     * @return string
+     */
+    public static function underscore($str)
+    {
+        return strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $str));
+    }
 }
