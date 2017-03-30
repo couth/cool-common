@@ -2,13 +2,13 @@
     "name": "cool/common",
     "description": "Common Library for Cool projects",
     "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "Carl Liu",
             "email": "coolboy@outlook.com"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.6.4"
     },
