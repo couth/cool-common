@@ -1,2 +1,2 @@
 # cool-common
- Common Library for Cool projects.
+ Common Library for Cool project.
