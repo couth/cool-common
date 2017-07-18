@@ -2,7 +2,7 @@
  Common Library for Cool projects.
 
 
- - about FormHelper
+ - about Form\FormHelper
  
  ```
 // This class is compatible with these templates
@@ -59,7 +59,7 @@
 ```
  
  
- - about FormCore
+ - about Form\FormCore
  
 ```
 $cfg = [
@@ -74,5 +74,48 @@ $form->addMultiData(['formOpen', ['', 'post']]);
 $form->addData(['text', ['fname', 'carl']]);
 $form->addData(['formEnd', []]);
 echo $form->render();
+
+```
+
+ - about Catagory\CatagoryHelper
+ 
+```
+//====================Test code ================================
+
+header("content-type:text/html;charset=utf-8");
+$categories = array(
+    array('id'=>1,'name'=>'电脑','pid'=>0),
+    array('id'=>2,'name'=>'手机','pid'=>0),
+    array('id'=>3,'name'=>'笔记本','pid'=>1),
+    array('id'=>4,'name'=>'台式机','pid'=>1),
+    array('id'=>5,'name'=>'智能机','pid'=>2),
+    array('id'=>6,'name'=>'功能机','pid'=>2),
+    array('id'=>7,'name'=>'超级本','pid'=>3),
+    array('id'=>8,'name'=>'游戏本','pid'=>3),
+);
+
+//$cate = new CateHelper();
+$tree = CateHelper::planeToTree($categories);
+
+print_r($tree);
+
+$data = CateHelper::treeToPlane($tree);
+
+print_r($data);
+
+print_r(CateHelper::sort($data));
+
+print_r(CateHelper::sort($data, 1));
+
+```
+
+ - about Http\CurlHelper
+
+```
+
+//============ Test =================
+//$curl = new curlHelper();
+//$url = 'http://a.com/dfdsf/?dxid=dsl';
+//$curl->curlGet($url,['name'=>'carl']);
 
 ```
