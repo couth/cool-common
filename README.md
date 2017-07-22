@@ -77,7 +77,7 @@ echo $form->render();
 
 ```
 
- - about Catagory\CatagoryHelper
+ - about Category\CategoryHelper
  
 ```
 //====================Test code ================================
@@ -94,18 +94,18 @@ $categories = array(
     array('id'=>8,'name'=>'游戏本','pid'=>3),
 );
 
-//$cate = new CateHelper();
-$tree = CateHelper::planeToTree($categories);
+//$cate = new CategoryHelper();
+$tree = CategoryHelper::planeToTree($categories);
 
 print_r($tree);
 
-$data = CateHelper::treeToPlane($tree);
+$data = CategoryHelper::treeToPlane($tree);
 
 print_r($data);
 
-print_r(CateHelper::sort($data));
+print_r(CategoryHelper::sort($data));
 
-print_r(CateHelper::sort($data, 1));
+print_r(CategoryHelper::sort($data, 1));
 
 ```
 

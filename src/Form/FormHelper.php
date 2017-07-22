@@ -54,4 +54,28 @@ class FormHelper implements FormHelperInterface
         }
         return $result;
     }
+
+
+   /**
+     * make option html
+     *
+     * @param $data e.g. ['k1' => $v1, 'k2' => 'v2']
+     * @param $selected e.g. k1
+     * @return string e.g. <option value="k1" selected="selected">v1</option><option value="k2">v2</option>
+     */
+    public static function makeSimpleOptionHtml($data, $selected)
+    {
+        $html = '';
+        $template = '<option value="%s"%s>%s</option>';
+        foreach ($data as $k => $v) {
+            if($k == $selected) {
+                $item = [$k, 'selected="selected"', $v];
+            } else {
+                $item = [$k, '', $v];
+            }
+            $html .= vsprintf($template, $item) . "\n";
+        }
+
+        return $html;
+    }
 }
