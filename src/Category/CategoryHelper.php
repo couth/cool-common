@@ -51,6 +51,34 @@ class CategoryHelper
         return $tree;
     }
 
+    public static function treeToPlaneWithLevel($tree, $level = 0, $levelKey = 'categoryLevel', $id = 'id', $pid = 'pid', $childrenKey = 'children')
+    {
+        $data = [];
+        $levelFlag = ($level === false || empty($levelKey)) ? false : true;
+        $level = intval($level);
+        if($level < 0) {
+            return $data;
+        }
+        $level++;
+
+        foreach ($tree as $key => $item) {
+            if($levelFlag) {
+                $item[$levelKey] = $level;
+            }
+
+            if ( ! empty($item[$childrenKey])) {
+                $tmp = $item[$childrenKey];
+                unset($item[$childrenKey]);
+                $data[] = $item;
+                $data = array_merge($data, self::treeToPlaneWithLevel($tmp, $level, $levelKey, $id, $pid, $childrenKey));
+            } else {
+                $data[] = $item;
+            }
+        }
+
+        return $data;
+    }
+
     public static function treeToPlane($tree, $id = 'id', $pid = 'pid', $childrenKey = 'children')
     {
         $data = [];
