@@ -119,3 +119,85 @@ print_r(CategoryHelper::sort($data, 1));
 //$curl->curlGet($url,['name'=>'carl']);
 
 ```
+
+ - about Pagination\Pagination
+ 
+```
+
+//============ Generate normal pagination =================
+$p = new Pagination();
+$page = isset($_GET['page']) ? intval($_GET['page']) : 8;
+$page = $page > 0 ? $page : 8;
+$p->init($page, 123);
+$p->setTotalNum(1230);
+
+// echo css
+echo '<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+      <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://cdn.staticfile.org/popper.js/1.12.5/umd/popper.min.js"></script>
+      <script src="https://cdn.staticfile.org/twitter-bootstrap/4.1.0/js/bootstrap.min.js"></script>
+      <style type="text/css">
+          .input-page {
+              width: 3em;
+          }
+      </style>';
+          
+echo $p->view();
+
+```
+
+```
+// Generate js pagination. (You can add js event to loop)
+
+$p = new Pagination();
+$page = isset($_GET['page']) ? intval($_GET['page']) : 7;
+$page = $page > 0 ? $page : 7;
+$p->init($page, 123);
+
+$template = [
+    'pageWrapper' => '<ul class="pagination pagination-sm">%s</ul>',
+    'firstPage' => [
+        '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+        '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    ],
+    'preGroupPage' => [
+        '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+        '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    ],
+    'prePage' => [
+        '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+        '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    ],
+    'pageItem' => '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+    'currentPage' => '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    'nextPage' => [
+        '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+        '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    ],
+    'nextGroupPage' => [
+        '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+        '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    ],
+    'lastPage' => [
+        '<li class="page-item"><span class="page-link page-item-click" data-page="%s">%s</span></li>',
+        '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    ],
+    'loopPage' => '<li>
+            <form action="%s" method="get">
+                <div class="input-group input-group-sm">
+                    <input class="input-page" name="page" type="text">
+                    <div class="input-group-append">
+                        <button type="submit" class="btn btn-info">%s</button>
+                    </div>
+                </div>
+            </form>
+        </li>',
+    'totalPage' => '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+    'totalNum' => '<li class="page-item disabled"><span class="page-link">%s</span></li>',
+];
+
+$p->setTemplate($template);
+$p->setTotalNum(12050);
+echo $p->view();
+
+```
