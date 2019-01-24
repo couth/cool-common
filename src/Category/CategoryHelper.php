@@ -11,31 +11,32 @@
  */
 
 namespace Cool\Common\Category;
+use Cool\Common\Form\FormHelper;
 
 class CategoryHelper
 {
-    public static function planeToTree($data, $excludeId = 0, $id = 'id', $pid = 'pid', $childrenKey = 'children')
+    public static function planeToTree($data, $excludeId = 0, $idKey = 'id', $pidKey = 'pid', $childrenKey = 'children')
     {
         $tree = [];
 
         $excludeId = intval($excludeId);
         if($excludeId) {
             foreach ($data as $item) {
-                if($excludeId != $item[$id]) {
-                    $tree[$item[$id]] = $item;
-                    $tree[$item[$id]][$childrenKey] = [];
+                if($excludeId != $item[$idKey]) {
+                    $tree[$item[$idKey]] = $item;
+                    $tree[$item[$idKey]][$childrenKey] = [];
                 }
             }
         } else {
             foreach ($data as $item) {
-                $tree[$item[$id]] = $item;
-                $tree[$item[$id]][$childrenKey] = [];
+                $tree[$item[$idKey]] = $item;
+                $tree[$item[$idKey]][$childrenKey] = [];
             }
         }
 
         foreach ($tree as $key => $item) {
-            if ($item[$pid] != 0 && isset($tree[$item[$pid]])) {
-                $tree[$item[$pid]][$childrenKey][] = &$tree[$key];
+            if ($item[$pidKey] != 0 && isset($tree[$item[$pidKey]])) {
+                $tree[$item[$pidKey]][$childrenKey][] = &$tree[$key];
                 if (empty($tree[$key][$childrenKey])) {
                     unset($tree[$key][$childrenKey]);
                 }
@@ -43,7 +44,7 @@ class CategoryHelper
         }
 
         foreach ($tree as $key => $item) {
-            if ($item['pid'] != 0) {
+            if ($item[$pidKey] != 0) {
                 unset($tree[$key]);
             }
         }
@@ -51,15 +52,17 @@ class CategoryHelper
         return $tree;
     }
 
-    public static function treeToPlaneWithLevel($tree, $level = 0, $levelKey = 'categoryLevel', $id = 'id', $pid = 'pid', $childrenKey = 'children')
+    public static function treeToPlaneWithLevel($tree, $level = 0, $levelKey = 'categoryLevel', $childrenKey = 'children')
     {
         $data = [];
         $levelFlag = ($level === false || empty($levelKey)) ? false : true;
         $level = intval($level);
         if($level < 0) {
-            return $data;
+            $levelFlag = false;
         }
-        $level++;
+        if($levelFlag) {
+            $level++;
+        }
 
         foreach ($tree as $key => $item) {
             if($levelFlag) {
@@ -70,7 +73,7 @@ class CategoryHelper
                 $tmp = $item[$childrenKey];
                 unset($item[$childrenKey]);
                 $data[] = $item;
-                $data = array_merge($data, self::treeToPlaneWithLevel($tmp, $level, $levelKey, $id, $pid, $childrenKey));
+                $data = array_merge($data, self::treeToPlaneWithLevel($tmp, $level, $levelKey, $childrenKey));
             } else {
                 $data[] = $item;
             }
@@ -79,7 +82,7 @@ class CategoryHelper
         return $data;
     }
 
-    public static function treeToPlane($tree, $id = 'id', $pid = 'pid', $childrenKey = 'children')
+    public static function treeToPlane($tree, $childrenKey = 'children')
     {
         $data = [];
         foreach ($tree as $key => $item) {
@@ -87,7 +90,7 @@ class CategoryHelper
                 $tmp = $item[$childrenKey];
                 unset($item[$childrenKey]);
                 $data[] = $item;
-                $data = array_merge($data, self::treeToPlane($tmp, $id, $pid, $childrenKey));
+                $data = array_merge($data, self::treeToPlane($tmp, $childrenKey));
             } else {
                 $data[] = $item;
             }
@@ -96,11 +99,11 @@ class CategoryHelper
         return $data;
     }
 
-    public static function sort($data, $renewIndex = false, $id = 'id')
+    public static function sort($data, $renewIndex = false, $idKey = 'id')
     {
         $return = [];
         foreach ($data as $item) {
-            $return[$item[$id]] = $item;
+            $return[$item[$idKey]] = $item;
         }
 
         if($renewIndex) {
@@ -113,40 +116,49 @@ class CategoryHelper
     }
 
     public static function render(
-        $tree,
-        $template,
-        $keys = [],
+        $data,
+        $excludeId = 0,
+        $selectedId = 0,
         $indentKey = 'name',
-        $indentString = '',
-        $id = 'id',
-        $pid = 'pid',
+        $indentString = '-',
+        $idKey = 'id',
+        $pidKey = 'pid',
         $childrenKey = 'children',
+        $levelKey = 'categoryLevel',
         $level = 0
     ) {
-        if(empty($tree) || empty($template) || empty($keys))
+        if(empty($data))
         {
             return '';
         }
 
-        $html = '';
-        foreach ($tree as $item) {
-            $tmp = [];
-            foreach ($keys as $k) {
-                if($k == $indentKey) {
-                    $tmp[] = str_repeat($indentString, $level) . $item[$k];
-                } else {
-                    $tmp[] = $item[$k];
-                }
+        $data = self::planeToTree($data, $excludeId, $idKey, $pidKey, $childrenKey);
+        $data =  self::treeToPlaneWithLevel($data, $level, $levelKey, $childrenKey);
+        $data =  self::formatIndentKey($data, $indentKey, $indentString, $levelKey);
+        $data = array_convert_to_key_value($data, $idKey, $indentKey);
+        return FormHelper::makeSimpleOptionHtml($data, $selectedId);
+    }
 
-            }
 
-            $html .= vsprintf($template, $tmp);
-            if(!empty($item[$childrenKey])) {
-                $subLevel = $level + 1;
-                 $html .= self::render($item[$childrenKey], $template, $keys, $indentKey, $indentString, $id, $pid, $childrenKey, $subLevel);
+    /**
+     * Indent category name
+     *
+     * @param array $data plane category data
+     * @param string $indentKey
+     * @param string $indentString
+     * @param string $levelKey
+     * @return array
+     */
+    public static function formatIndentKey($data = [], $indentKey = 'name', $indentString = '-', $levelKey = 'categoryLevel')
+    {
+        foreach ($data as $k => $v) {
+            if($v[$levelKey] > 1) {
+                $v[$indentKey] = str_repeat($indentString, $v[$levelKey] -1) . $v[$indentKey];
+                $data[$k] = $v;
             }
         }
 
-        return $html;
+        return $data;
     }
+
 }

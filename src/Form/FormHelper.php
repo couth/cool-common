@@ -69,7 +69,7 @@ class FormHelper implements FormHelperInterface
         $template = '<option value="%s"%s>%s</option>';
         foreach ($data as $k => $v) {
             if($k == $selected) {
-                $item = [$k, 'selected="selected"', $v];
+                $item = [$k, ' selected="selected"', $v];
             } else {
                 $item = [$k, '', $v];
             }
