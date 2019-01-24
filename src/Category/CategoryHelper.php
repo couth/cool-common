@@ -12,6 +12,7 @@
 
 namespace Cool\Common\Category;
 use Cool\Common\Form\FormHelper;
+use Cool\Common\CoolHelpers;
 
 class CategoryHelper
 {
@@ -135,7 +136,7 @@ class CategoryHelper
         $data = self::planeToTree($data, $excludeId, $idKey, $pidKey, $childrenKey);
         $data =  self::treeToPlaneWithLevel($data, $level, $levelKey, $childrenKey);
         $data =  self::formatIndentKey($data, $indentKey, $indentString, $levelKey);
-        $data = array_convert_to_key_value($data, $idKey, $indentKey);
+        $data = CoolHelpers::array_convert_to_key_value($data, $idKey, $indentKey);
         return FormHelper::makeSimpleOptionHtml($data, $selectedId);
     }
 

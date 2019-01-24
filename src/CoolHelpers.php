@@ -110,4 +110,46 @@ class CoolHelpers
     {
         return strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $str));
     }
+
+    /**
+     * Convert array to one-dimensional array
+     *
+     * @param $data
+     * @param string $keyName
+     * @param string $valueName
+     * @return array|bool
+     */
+    public static function array_convert_to_key_value($data, $keyName = 'id', $valueName = 'name')
+    {
+        if (empty($data))
+        {
+            return FALSE;
+        }
+        $result = array();
+        foreach ($data as $v)
+        {
+            $result[$v[$keyName]] = $v[$valueName];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Index array by indexKey
+     *
+     * @param array $array
+     * @param string $indexKey
+     * @return array
+     */
+    public static function array_index($array = [], $indexKey = 'key')
+    {
+        $result = [];
+        foreach ($array as $value) {
+            if(isset($value[$indexKey])) {
+                $result[$value[$indexKey]] = $value;
+            }
+        }
+
+        return $result;
+    }
 }
