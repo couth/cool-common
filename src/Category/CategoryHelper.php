@@ -65,7 +65,7 @@ class CategoryHelper
             $level++;
         }
 
-        foreach ($tree as $key => $item) {
+        foreach ($tree as $item) {
             if($levelFlag) {
                 $item[$levelKey] = $level;
             }
@@ -100,26 +100,65 @@ class CategoryHelper
         return $data;
     }
 
-    public static function sort($data, $renewIndex = false, $idKey = 'id')
+    /**
+     * @param $data
+     * @param string $sortKey // Use '' or false or null to forbidden sort
+     * @param string $childrenKey
+     * @return array
+     */
+    public static function sort($data, $sortKey = 'id', $childrenKey = 'children')
     {
-        $return = [];
+        if($sortKey === '' || $sortKey === false || $sortKey === null) {
+            return $data;
+        }
+        $result = [];
         foreach ($data as $item) {
-            $return[$item[$idKey]] = $item;
-        }
+            if(!empty($item[$childrenKey])) {
+                $item[$childrenKey] = self::sort($item[$childrenKey], $sortKey, $childrenKey);
+            }
 
-        if($renewIndex) {
-            sort($return);
-        } else {
-            asort($return);
+            $result[$item[$sortKey]][] = $item;
         }
+        ksort($result);
+        $data = self::arrayMergeSubArray($result, $childrenKey);
 
-        return $return;
+        return $data;
     }
 
-    public static function render(
+    public static function arrayMergeSubArray($data = [], $childrenKey = 'children')
+    {
+        if(empty($data)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($data as $item) {
+            if(!empty($item[$childrenKey])) {
+                $item[$childrenKey] = self::arrayMergeSubArray($item[$childrenKey], $childrenKey);
+            }
+            $result = array_merge($result, $item);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $data
+     * @param int $excludeId
+     * @param string $sortKey  // Use '' or false or null to forbidden sort
+     * @param string $indentKey
+     * @param string $indentString
+     * @param string $idKey
+     * @param string $pidKey
+     * @param string $childrenKey
+     * @param string $levelKey
+     * @param int $level
+     * @return string
+     */
+    public static function format(
         $data,
         $excludeId = 0,
-        $selectedId = 0,
+        $sortKey = 'id',
         $indentKey = 'name',
         $indentString = '-',
         $idKey = 'id',
@@ -134,9 +173,55 @@ class CategoryHelper
         }
 
         $data = self::planeToTree($data, $excludeId, $idKey, $pidKey, $childrenKey);
+        $data = self::sort($data, $sortKey, $childrenKey);
         $data =  self::treeToPlaneWithLevel($data, $level, $levelKey, $childrenKey);
         $data =  self::formatIndentKey($data, $indentKey, $indentString, $levelKey);
         $data = CoolHelpers::array_convert_to_key_value($data, $idKey, $indentKey);
+
+        return $data;
+    }
+
+
+    /**
+     * @param $data
+     * @param int $excludeId
+     * @param int $selectedId
+     * @param string $sortKey  // Use '' or false or null to forbidden sort
+     * @param string $indentKey
+     * @param string $indentString
+     * @param string $idKey
+     * @param string $pidKey
+     * @param string $childrenKey
+     * @param string $levelKey
+     * @param int $level
+     * @return string
+     */
+    public static function render(
+        $data,
+        $excludeId = 0,
+        $selectedId = 0,
+        $sortKey = 'id',
+        $indentKey = 'name',
+        $indentString = '-',
+        $idKey = 'id',
+        $pidKey = 'pid',
+        $childrenKey = 'children',
+        $levelKey = 'categoryLevel',
+        $level = 0
+    ) {
+        $data = self::format(
+            $data,
+            $excludeId,
+            $sortKey,
+            $indentKey,
+            $indentString,
+            $idKey,
+            $pidKey,
+            $childrenKey,
+            $levelKey,
+            $level
+        );
+
         return FormHelper::makeSimpleOptionHtml($data, $selectedId);
     }
 

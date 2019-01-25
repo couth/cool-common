@@ -95,17 +95,8 @@ $categories = array(
 );
 
 //$cate = new CategoryHelper();
-$tree = CategoryHelper::planeToTree($categories);
-
-print_r($tree);
-
-$data = CategoryHelper::treeToPlane($tree);
-
-print_r($data);
-
-print_r(CategoryHelper::sort($data));
-
-print_r(CategoryHelper::sort($data, 1));
+$cate = CategoryHelper::render($categories);
+$cate = CategoryHelper::format($categories);
 
 ```
 
