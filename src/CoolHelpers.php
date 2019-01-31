@@ -169,4 +169,17 @@ class CoolHelpers
 
         return $time . $extension;
     }
+
+    public static function guidName($extension = '')
+    {
+        $guid = self::guid();
+
+        if($extension === '' || $extension === false || $extension === null) {
+            return $guid;
+        }
+
+        $extension = '.' . ltrim($extension, '.');
+
+        return $guid . $extension;
+    }
 }
