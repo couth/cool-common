@@ -119,7 +119,7 @@ class CoolHelpers
      * @param string $valueName
      * @return array|bool
      */
-    public static function array_convert_to_key_value($data, $keyName = 'id', $valueName = 'name')
+    public static function arrayToKv($data, $keyName = 'id', $valueName = 'name')
     {
         if (empty($data))
         {
@@ -141,7 +141,7 @@ class CoolHelpers
      * @param string $indexKey
      * @return array
      */
-    public static function array_index($array = [], $indexKey = 'key')
+    public static function arrayIndex($array = [], $indexKey = 'key')
     {
         $result = [];
         foreach ($array as $value) {
@@ -151,5 +151,22 @@ class CoolHelpers
         }
 
         return $result;
+    }
+
+
+    public static function nameFromTime($extension = '', $dataFormat = 'Ymd-His')
+    {
+        $time = explode(' ', microtime());
+        $time = round($time[0], 4) * 10000;
+        $prefix = empty($dataFormat) ? '' : date($dataFormat) . '-';
+        $time = $prefix . vsprintf('%04d', $time);
+
+        if($extension === '' || $extension === false || $extension === null) {
+            return $time;
+        }
+
+        $extension = '.' . ltrim($extension, '.');
+
+        return $time . $extension;
     }
 }
