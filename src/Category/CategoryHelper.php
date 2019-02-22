@@ -176,7 +176,7 @@ class CategoryHelper
         $data = self::sort($data, $sortKey, $childrenKey);
         $data =  self::treeToPlaneWithLevel($data, $level, $levelKey, $childrenKey);
         $data =  self::formatIndentKey($data, $indentKey, $indentString, $levelKey);
-        $data = CoolHelpers::array_convert_to_key_value($data, $idKey, $indentKey);
+        $data = CoolHelpers::arrayToKv($data, $idKey, $indentKey);
 
         return $data;
     }
