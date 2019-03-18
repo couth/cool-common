@@ -125,10 +125,32 @@ class CoolHelpers
         {
             return FALSE;
         }
-        $result = array();
+        $result = [];
         foreach ($data as $v)
         {
             $result[$v[$keyName]] = $v[$valueName];
+        }
+
+        return $result;
+    }
+
+    /**
+     * Convert array to one-dimensional array
+     *
+     * @param $data
+     * @param string $valueName
+     * @return array|bool
+     */
+    public static function arrayToV($data, $valueName = 'name')
+    {
+        if (empty($data))
+        {
+            return FALSE;
+        }
+        $result = [];
+        foreach ($data as $v)
+        {
+            $result[] = $v[$valueName];
         }
 
         return $result;
