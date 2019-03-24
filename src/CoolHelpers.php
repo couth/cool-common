@@ -214,7 +214,7 @@ class CoolHelpers
     }
 
 
-    public static function ResultArray($errCode = 0, $msg = '', $data = [])
+    public static function resultArray($errCode = 0, $msg = '', $data = [])
     {
         return [
             'errCode' => $errCode,
