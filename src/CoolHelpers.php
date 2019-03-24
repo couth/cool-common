@@ -224,7 +224,7 @@ class CoolHelpers
     }
 
 
-    function humanFileSize($bytes, $decimals = 2)
+    public static function humanFileSize($bytes, $decimals = 2)
     {
         $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
         $factor = floor((strlen($bytes) - 1) / 3);
