@@ -27,6 +27,7 @@ class CoolHelpers
         return self::fileWrite($file, $data, $type);
     }
 
+
     /**
      * write to file
      *
@@ -68,6 +69,7 @@ class CoolHelpers
         return true;
     }
 
+
     /**
      *  generate guid
      */
@@ -89,6 +91,7 @@ class CoolHelpers
         return sprintf('%04x%04x%04x%04x%04x%04x%04x%04x', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
     }
 
+
     /**
      * convert string to camel case
      *
@@ -100,6 +103,7 @@ class CoolHelpers
         return str_replace(' ', '', lcfirst(ucwords(str_replace('_', ' ', $str))));
     }
 
+
     /**
      * convert string to underscore case
      *
@@ -110,6 +114,7 @@ class CoolHelpers
     {
         return strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $str));
     }
+
 
     /**
      * Convert array to one-dimensional array
@@ -134,6 +139,7 @@ class CoolHelpers
         return $result;
     }
 
+
     /**
      * Convert array to one-dimensional array
      *
@@ -155,6 +161,7 @@ class CoolHelpers
 
         return $result;
     }
+
 
     /**
      * Index array by indexKey
@@ -192,6 +199,7 @@ class CoolHelpers
         return $time . $extension;
     }
 
+
     public static function guidName($extension = '')
     {
         $guid = self::guid();
@@ -203,5 +211,24 @@ class CoolHelpers
         $extension = '.' . ltrim($extension, '.');
 
         return $guid . $extension;
+    }
+
+
+    public static function ResultArray($errCode = 0, $msg = '', $data = [])
+    {
+        return [
+            'errCode' => $errCode,
+            'msg' => $msg,
+            'data' => $data
+        ];
+    }
+
+
+    function humanFileSize($bytes, $decimals = 2)
+    {
+        $size = ['B', 'kB', 'MB', 'GB', 'TB', 'PB'];
+        $factor = floor((strlen($bytes) - 1) / 3);
+
+        return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) .@$size[$factor];
     }
 }
