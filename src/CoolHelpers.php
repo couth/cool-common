@@ -231,4 +231,66 @@ class CoolHelpers
 
         return sprintf("%.{$decimals}f", $bytes / pow(1024, $factor)) .@$size[$factor];
     }
+
+
+    /**
+     * Convert array to code string
+     *
+     * @param  array  $data
+     * @param  int  $indent
+     * @param  string  $repeatStr
+     * @return array|string
+     */
+    public static function arrayToCode($data = [], $indent = 0, $repeatStr = '    ')
+    {
+        if(is_string($data)) {
+            return '\'' . $data . '\'';
+        } elseif(is_null($data)) {
+            return 'null';
+        } elseif(!is_array($data)) {
+            return $data;
+        }
+
+        $str = '[' . PHP_EOL;
+        $indent ++;
+        foreach ($data as $k => $v) {
+            $indentStr = str_repeat($repeatStr, $indent);
+            if (is_numeric($k) && !is_string($k)) {
+                $str .= sprintf($indentStr . '%s => %s,' . PHP_EOL, $k, self::arrayToCode($v, $indent, $repeatStr));
+            } else {
+                $str .= sprintf($indentStr . '\'%s\' => %s,' . PHP_EOL, $k, self::arrayToCode($v, $indent, $repeatStr));
+            }
+        }
+
+        $str .= str_repeat($repeatStr, $indent - 1) . ']';
+
+        return $str;
+    }
+
+
+    /**
+     * Convert array to array code string
+     *
+     * @param  string  $json
+     * @return mixed|string
+     */
+    public static function jsonToArrayCode($json = '')
+    {
+        $data = json_decode($json, true);
+        if(is_string($data)) {
+            return '\'' . $data . '\'';
+        } elseif(is_null($data)) {
+            return 'null';
+        } elseif(!is_array($data)) {
+            return $data;
+        }
+
+        $code = str_replace('\'', '\\\'', $json);
+        $code = str_replace('"', '\'', $code);
+        $code = str_replace('{', '[', $code);
+        $code = str_replace('}', ']', $code);
+        $code = str_replace(':', '=>', $code);
+
+        return $code;
+    }
 }
