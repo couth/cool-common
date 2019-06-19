@@ -60,10 +60,10 @@ class FormHelper implements FormHelperInterface
      * make option html
      *
      * @param $data e.g. ['k1' => $v1, 'k2' => 'v2']
-     * @param $selected e.g. k1
+     * @param string $selected e.g. k1
      * @return string e.g. <option value="k1" selected="selected">v1</option><option value="k2">v2</option>
      */
-    public static function makeSimpleOptionHtml($data, $selected)
+    public static function makeSimpleOptionHtml($data, $selected = '')
     {
         $html = '';
         $template = '<option value="%s"%s>%s</option>';
