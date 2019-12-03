@@ -12,11 +12,10 @@
 
 namespace Cool\Common\Category;
 use Cool\Common\Form\FormHelper;
-use Cool\Common\CoolHelpers;
 
-class CategoryHelper
+class Category
 {
-    public static function planeToTree($data, $excludeId = 0, $idKey = 'id', $pidKey = 'pid', $childrenKey = 'children')
+    public static function planeToTree($data, $excludeId = 0, $idKey = 'id', $pidKey = 'pid', $childrenKey = '_children')
     {
         $tree = [];
 
@@ -53,7 +52,7 @@ class CategoryHelper
         return $tree;
     }
 
-    public static function treeToPlaneWithLevel($tree, $level = 0, $levelKey = 'categoryLevel', $childrenKey = 'children')
+    public static function treeToPlaneWithLevel($tree, $level = 0, $levelKey = '_level', $childrenKey = '_children')
     {
         $data = [];
         $levelFlag = ($level === false || empty($levelKey)) ? false : true;
@@ -83,7 +82,7 @@ class CategoryHelper
         return $data;
     }
 
-    public static function treeToPlane($tree, $childrenKey = 'children')
+    public static function treeToPlane($tree, $childrenKey = '_children')
     {
         $data = [];
         foreach ($tree as $key => $item) {
@@ -106,7 +105,7 @@ class CategoryHelper
      * @param string $childrenKey
      * @return array
      */
-    public static function sort($data, $sortKey = 'id', $childrenKey = 'children')
+    public static function sort($data, $sortKey = 'id', $childrenKey = '_children')
     {
         if($sortKey === '' || $sortKey === false || $sortKey === null) {
             return $data;
@@ -125,7 +124,7 @@ class CategoryHelper
         return $data;
     }
 
-    public static function arrayMergeSubArray($data = [], $childrenKey = 'children')
+    public static function arrayMergeSubArray($data = [], $childrenKey = '_children')
     {
         if(empty($data)) {
             return [];
@@ -163,8 +162,8 @@ class CategoryHelper
         $indentString = '-',
         $idKey = 'id',
         $pidKey = 'pid',
-        $childrenKey = 'children',
-        $levelKey = 'categoryLevel',
+        $childrenKey = '_children',
+        $levelKey = '_level',
         $level = 0
     ) {
         if(empty($data))
@@ -176,7 +175,7 @@ class CategoryHelper
         $data = self::sort($data, $sortKey, $childrenKey);
         $data =  self::treeToPlaneWithLevel($data, $level, $levelKey, $childrenKey);
         $data =  self::formatIndentKey($data, $indentKey, $indentString, $levelKey);
-        $data = CoolHelpers::arrayToKv($data, $idKey, $indentKey);
+        $data = array_column($data, $indentKey, $idKey);
 
         return $data;
     }
@@ -205,8 +204,8 @@ class CategoryHelper
         $indentString = '-',
         $idKey = 'id',
         $pidKey = 'pid',
-        $childrenKey = 'children',
-        $levelKey = 'categoryLevel',
+        $childrenKey = '_children',
+        $levelKey = '_level',
         $level = 0
     ) {
         $data = self::format(
@@ -235,7 +234,7 @@ class CategoryHelper
      * @param string $levelKey
      * @return array
      */
-    public static function formatIndentKey($data = [], $indentKey = 'name', $indentString = '-', $levelKey = 'categoryLevel')
+    public static function formatIndentKey($data = [], $indentKey = 'name', $indentString = '-', $levelKey = '_level')
     {
         foreach ($data as $k => $v) {
             if($v[$levelKey] > 1) {
