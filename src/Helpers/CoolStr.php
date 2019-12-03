@@ -1,5 +1,5 @@
 <?php
-namespace Cool\Common;
+namespace Cool\Common\Helpers;
 
 /**
  * Class CoolStr
