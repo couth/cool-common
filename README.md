@@ -192,3 +192,52 @@ $p->setTotalNum(12050);
 echo $p->view();
 
 ```
+
+ - about Helpers\CoolArray
+ 
+ ```php
+
+$data = [
+    "dataShow" => [
+        "conf"=>[
+            "key"=>"type",
+            "code"=>[
+                "order-data"=>"TA",
+                "change-data"=>"DATA.CUSTOMER_CHANGE_DATA",
+                "turn-data"=>"CUSTOMER.CRM_TURN_REGION",
+                "leads-data"=>"TASK.CRM_LEADS_QUERY",
+                "tag-data"=>"CONFIG.OS_CATEGORY",
+                "user-data"=>"CONFIG.OS_CATEGORY",
+                "see-phone"=>1,
+            ]
+        ],
+        "requireParam"=>"type", 
+        "paramCont"=>["order-data", "tag-data", "user-data", 'see-phone']
+    ],
+];
+
+
+$structure = [
+    "dataShow" => [
+        "conf"=>[
+            "key"=>"type",
+            "code"=>[
+                "order-data"=>"fdgfd",
+                "change-data"=>"DATA.CUSTOMER_CHANGE_DATA",
+                "turn-data"=>"CUSTOMER.CRM_TURN_REGION",
+                "leads-data"=>"TASK.CRM_LEADS_QUERY",
+                "tag-data"=>"CONFIG.OS_CATEGORY",
+                "user-data"=>"CONFIG.OS_CATEGORY",
+                "see-phone"=>"CONFIG.OS_CATEGORY",
+            ]
+        ],
+        "requireParam"=>"type",
+        "paramCont"=>["order-data", "change-data", "tag-data", "user-data", 'see-phone']
+    ],
+];
+
+$ret = CoolArray::checkStructure($data, $structure);
+
+var_dump($ret);
+
+```

@@ -107,4 +107,52 @@ class CoolArray
             'data' => $data
         ];
     }
+
+    /**
+     * Check api data structure
+     *
+     * @param array $data
+     * @param array $structure
+     * @param bool $notCheckNumKey
+     * @param bool $checkType
+     * @return bool
+     */
+    public static function checkStructure($data = [], $structure = [], $notCheckNumKey = true, $checkType = false)
+    {
+        if(empty($structure) && empty($data)) {
+            return true;
+        }
+
+        if($notCheckNumKey && (array_values($structure) == $structure)) {
+            return true;
+        }
+
+        foreach ($structure as $k => $v) {
+            if($notCheckNumKey && is_numeric($k)) {
+                continue;
+            }
+            if (!isset($data[$k])) {
+                return false;
+            }
+
+            if(is_array($v)) {
+                if($notCheckNumKey && (array_values($v) == $v)) {
+                    continue;
+                }
+
+                $flag = self::checkStructure($data[$k], $v, $notCheckNumKey, $checkType);
+                if(!$flag) {
+                    return false;
+                }
+            }
+
+            if($checkType) {
+                if(gettype($data[$k]) !== gettype($v)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
