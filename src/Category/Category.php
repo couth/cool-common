@@ -18,28 +18,19 @@ class Category
     public static function planeToTree($data, $excludeId = 0, $idKey = 'id', $pidKey = 'pid', $childrenKey = '_children')
     {
         $tree = [];
-
         $excludeId = intval($excludeId);
-        if($excludeId) {
-            foreach ($data as $item) {
-                if($excludeId != $item[$idKey]) {
-                    $tree[$item[$idKey]] = $item;
-                    $tree[$item[$idKey]][$childrenKey] = [];
-                }
-            }
-        } else {
-            foreach ($data as $item) {
-                $tree[$item[$idKey]] = $item;
-                $tree[$item[$idKey]][$childrenKey] = [];
-            }
+        $tree = array_column($data, null, $idKey);
+
+        if(isset($tree[$excludeId])) {
+            unset($tree[$excludeId]);
         }
 
         foreach ($tree as $key => $item) {
             if ($item[$pidKey] != 0 && isset($tree[$item[$pidKey]])) {
-                $tree[$item[$pidKey]][$childrenKey][] = &$tree[$key];
-                if (empty($tree[$key][$childrenKey])) {
-                    unset($tree[$key][$childrenKey]);
+                if(!isset($tree[$item[$pidKey]][$childrenKey])) {
+                    $tree[$item[$pidKey]][$childrenKey] = [];
                 }
+                $tree[$item[$pidKey]][$childrenKey][] = &$tree[$key];
             }
         }
 
@@ -49,7 +40,39 @@ class Category
             }
         }
 
-        return $tree;
+        return array_values($tree);
+    }
+
+    public static function treeToPlaneWithParentIds($tree, $level = 0, $pidArr = [], $idKey = 'id', $levelKey = '_level', $childrenKey = '_children', $pidArrKey = '_parentIds')
+    {
+        $data = [];
+        $levelFlag = ($level === false || empty($levelKey)) ? false : true;
+        $level = intval($level);
+        if($level < 0) {
+            $levelFlag = false;
+        }
+        if($levelFlag) {
+            $level++;
+        }
+
+        foreach ($tree as $item) {
+            if($levelFlag) {
+                $item[$levelKey] = $level;
+            }
+            $item[$pidArrKey] = $pidArr;
+            if (!empty($item[$childrenKey])) {
+                $tmpPidArr = $pidArr;
+                array_push($tmpPidArr, $item[$idKey]);
+                $tmp = $item[$childrenKey];
+                unset($item[$childrenKey]);
+                $data[] = $item;
+                $data = array_merge($data, self::treeToPlaneWithParentIds($tmp, $level, $tmpPidArr, $idKey, $levelKey, $childrenKey, $pidArrKey));
+            } else {
+                $data[] = $item;
+            }
+        }
+
+        return $data;
     }
 
     public static function treeToPlaneWithLevel($tree, $level = 0, $levelKey = '_level', $childrenKey = '_children')
