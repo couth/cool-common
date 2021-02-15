@@ -99,13 +99,27 @@ class CoolArray
         return $str;
     }
 
-    public static function result($code = 0, $msg = '', $data = [])
+    public static function retArr(array $data = [], string $msg = '', int $code = 0, $more = []): array
     {
-        return [
+        // make sure $data is {}
+        $data = empty($data) ? new \stdClass() : $data;
+        if(is_array($data) && !is_string(array_keys($data)[0])) {
+            $data = [
+                'data' => $data,
+            ];
+        }
+        $ret = [
             'code' => $code,
             'msg' => $msg,
-            'data' => $data
+            'data' => $data,
         ];
+
+        return array_merge($more, $ret);
+    }
+
+    public static function retJson(array $data = [], string $msg = '', int $code = 0, $more = []): string
+    {
+        return json_encode(self::retArr($data, $msg, $code, $more));
     }
 
     /**
