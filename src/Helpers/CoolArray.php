@@ -169,4 +169,55 @@ class CoolArray
 
         return true;
     }
+
+    /**
+     * 转换数组，将所有键由下划线式转为驼峰式
+     *
+     * @param array $data
+     * @param  bool  $ucfirst 是否大驼峰式
+     * @param  bool  $deep
+     * @return array
+     */
+    public static function camelize(array $data = [], bool $ucfirst = false, bool $deep = false)
+    {
+        if(empty($data)) {
+            return $data;
+        }
+
+        $ret = [];
+        foreach ($data as $k => $v) {
+            if (is_numeric($k)) {
+                $ret[$k] = is_array($v) && $deep ? self::camelize($v, $ucfirst, $deep) : $v;
+            } else {
+                $ret[CoolStr::camelize($k, $ucfirst)] = is_array($v) && $deep ? self::camelize($v, $ucfirst, $deep) : $v;
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * 转换数组，将所有键由驼峰式转为下划线式
+     *
+     * @param array $data
+     * @param  bool  $deep
+     * @return array
+     */
+    public static function underscore(array $data = [], bool $deep = false)
+    {
+        if(empty($data)) {
+            return $data;
+        }
+
+        $ret = [];
+        foreach ($data as $k => $v) {
+            if (is_numeric($k)) {
+                $ret[$k] = is_array($v) && $deep ? self::underscore($v, $deep) : $v;
+            } else {
+                $ret[CoolStr::underscore($k)] = is_array($v) && $deep ? self::underscore($v, $deep) : $v;
+            }
+        }
+
+        return $ret;
+    }
 }

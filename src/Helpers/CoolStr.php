@@ -33,10 +33,15 @@ class CoolStr
      * convert string to camel case
      *
      * @param $str
-     * @return mixed
+     * @param  bool  $ucfirst
+     * @return string|string[]
      */
-    public static function camelize($str)
+    public static function camelize($str, $ucfirst = false)
     {
+        if($ucfirst) {
+            return str_replace(' ', '', ucwords(str_replace('_', ' ', $str)));
+        }
+
         return str_replace(' ', '', lcfirst(ucwords(str_replace('_', ' ', $str))));
     }
 
