@@ -124,16 +124,22 @@ class CoolArray
 
     /**
      * Check api data structure
+     * only support array|int|string|bool, not support class
      *
      * @param array $data
      * @param array $structure
      * @param bool $notCheckNumKey
-     * @param bool $checkType
+     * @param bool $checkLeafType
+     * @param bool $deep
      * @return bool
      */
-    public static function checkStructure($data = [], $structure = [], $notCheckNumKey = true, $checkType = false)
+    public static function checkStructure($data = [], $structure = [], $notCheckNumKey = true, $checkLeafType = false, $deep = true)
     {
-        if(empty($structure) && empty($data)) {
+        // type invalid
+        if(!is_array($data) || !is_array($structure)) {
+            return false;
+        }
+        if(empty($structure)) {
             return true;
         }
 
@@ -145,22 +151,25 @@ class CoolArray
             if($notCheckNumKey && is_numeric($k)) {
                 continue;
             }
-            if (!isset($data[$k])) {
+            if (!key_exists($k, $data)) {
                 return false;
             }
 
-            if(is_array($v)) {
-                if($notCheckNumKey && (array_values($v) == $v)) {
+            if ($deep && is_array($v) && !empty($v)) { // check v
+                if (!is_array($data[$k])) {
+                    return false;
+                }
+
+                if ($notCheckNumKey && (array_values($v) == $v)) {
                     continue;
                 }
 
-                $flag = self::checkStructure($data[$k], $v, $notCheckNumKey, $checkType);
-                if(!$flag) {
+                if (!self::checkStructure($data[$k], $v, $notCheckNumKey, $checkLeafType, $deep)) {
                     return false;
                 }
             }
 
-            if($checkType) {
+            if($checkLeafType) {
                 if(gettype($data[$k]) !== gettype($v)) {
                     return false;
                 }
