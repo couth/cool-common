@@ -229,4 +229,20 @@ class CoolArray
 
         return $ret;
     }
+
+    /**
+     * 按给定键，过滤数组（通常用来去除掉不需要的键）
+     *
+     * @param array $arr
+     * @param array $keys
+     * @return array
+     */
+    public static function filterKeys($arr = [], $keys = [])
+    {
+        if(empty($arr) || empty($keys)) {
+            return [];
+        }
+
+        return array_intersect_key($arr, array_flip($keys));
+    }
 }
